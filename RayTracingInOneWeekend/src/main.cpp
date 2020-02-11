@@ -71,13 +71,17 @@ int main()
     vec3 origin(0.0f, 0.0f, 0.0f);
 
     hittable_list world;
-    world.push_back(sphere(vec3(0.0f, 0.0f, -1.0f), 0.5f, std::make_shared<lambertian>(vec3(0.1f, 0.2f, 0.5f))));
-    world.push_back(sphere(vec3(0.0f, -100.5f, -1.0f), 100.0f, std::make_shared<lambertian>(vec3(0.8f, 0.8f, 0.0f))));
-    world.push_back(sphere(vec3(1.0f, 0.0f, -1.0f), 0.5f, std::make_shared<metal>(vec3(0.8f, 0.6f, 0.2f), 0.3f)));
-    world.push_back(sphere(vec3(-1.0f, 0.0f, -1.0f), 0.5f, std::make_shared<dielectric>(1.5f)));
-    world.push_back(sphere(vec3(-1.0f, 0.0f, -1.0f), -0.45f, std::make_shared<dielectric>(1.5f)));
+    float R = cos(PI / 4);
+    world.push_back(sphere(vec3(-R, 0.0f, -1.0f), R, std::make_shared<lambertian>(vec3(0.0f, 0.0f, 1.0f))));
+    world.push_back(sphere(vec3(R, 0.0f, -1.0f), R, std::make_shared<lambertian>(vec3(1.0f, 0.0f, 0.0f))));
 
-    camera cam;
+    // world.push_back(sphere(vec3(0.0f, 0.0f, -1.0f), 0.5f, std::make_shared<lambertian>(vec3(0.1f, 0.2f, 0.5f))));
+    // world.push_back(sphere(vec3(0.0f, -100.5f, -1.0f), 100.0f, std::make_shared<lambertian>(vec3(0.8f, 0.8f, 0.0f))));
+    // world.push_back(sphere(vec3(1.0f, 0.0f, -1.0f), 0.5f, std::make_shared<metal>(vec3(0.8f, 0.6f, 0.2f), 0.3f)));
+    // world.push_back(sphere(vec3(-1.0f, 0.0f, -1.0f), 0.5f, std::make_shared<dielectric>(1.5f)));
+    // world.push_back(sphere(vec3(-1.0f, 0.0f, -1.0f), -0.45f, std::make_shared<dielectric>(1.5f)));
+
+    camera cam(90.0f, float(nx) / float(ny));
     unique_ptr<uint8_t[]> pixels(new uint8_t[nx * ny * channel_num]);
     int index = 0;
     for (int j = ny - 1; j >= 0; --j)
