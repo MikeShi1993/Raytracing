@@ -23,6 +23,7 @@ using std::vector;
 #include "stb_image_write.h"
 #include "lambertian.h"
 #include "metal.h"
+#include "dielectric.h"
 
 constexpr float max_float = std::numeric_limits<float>::max();
 
@@ -54,9 +55,13 @@ int main()
 {
     constexpr int channel_num = 3;
     constexpr int quality = 100;
-    constexpr int nx = 1000;
-    constexpr int ny = 500;
+    constexpr int nx = 2000;
+    constexpr int ny = 1000;
     constexpr int ns = 100;
+
+    // constexpr int nx = 200;
+    // constexpr int ny = 100;
+    // constexpr int ns = 50;
 
     auto start = std::chrono::system_clock::now();
 
@@ -66,10 +71,11 @@ int main()
     vec3 origin(0.0f, 0.0f, 0.0f);
 
     hittable_list world;
-    world.push_back(sphere(vec3(0.0f, 0.0f, -1.0f), 0.5f, std::make_shared<lambertian>(vec3(0.8f, 0.3f, 0.3f))));
+    world.push_back(sphere(vec3(0.0f, 0.0f, -1.0f), 0.5f, std::make_shared<lambertian>(vec3(0.1f, 0.2f, 0.5f))));
     world.push_back(sphere(vec3(0.0f, -100.5f, -1.0f), 100.0f, std::make_shared<lambertian>(vec3(0.8f, 0.8f, 0.0f))));
-    world.push_back(sphere(vec3(1.0f, 0.0f, -1.0f), 0.5f, std::make_shared<metal>(vec3(0.8f, 0.6f, 0.2f), 1.0f)));
-    world.push_back(sphere(vec3(-1.0f, 0.0f, -1.0f), 0.5f, std::make_shared<metal>(vec3(0.8f, 0.8f, 0.8f), 0.2f)));
+    world.push_back(sphere(vec3(1.0f, 0.0f, -1.0f), 0.5f, std::make_shared<metal>(vec3(0.8f, 0.6f, 0.2f), 0.3f)));
+    world.push_back(sphere(vec3(-1.0f, 0.0f, -1.0f), 0.5f, std::make_shared<dielectric>(1.5f)));
+    world.push_back(sphere(vec3(-1.0f, 0.0f, -1.0f), -0.45f, std::make_shared<dielectric>(1.5f)));
 
     camera cam;
     unique_ptr<uint8_t[]> pixels(new uint8_t[nx * ny * channel_num]);

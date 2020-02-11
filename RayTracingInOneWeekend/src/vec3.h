@@ -52,7 +52,7 @@ class vec3
     friend vec3 unit_vector(vec3 v);
 
 public:
-    vec3() : e{0.0f, 0.0f, 0.0f} {};
+    vec3() : vec3(0.0f, 0.0f, 0.0f){};
     vec3(float e0, float e1, float e2) : e{e0, e1, e2} {}
     vec3(const vec3 &v) : vec3(v.e[0], v.e[1], v.e[2]) {}
 

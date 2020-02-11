@@ -1,5 +1,6 @@
-add_library(vec3 vec3.h)
+add_library(vec3 vec3.cpp)
 add_library(hittable_list hittable_list.cpp)
+add_library(light_path light_path.cpp)
 set_target_properties(vec3 PROPERTIES LINKER_LANGUAGE CXX)
-add_executable(${PROJECT_NAME} main.cpp vec3 hittable_list)
+add_executable(${PROJECT_NAME} main.cpp vec3 hittable_list light_path)
 # target_compile_options(${PROJECT_NAME} PUBLIC "/openmp")
