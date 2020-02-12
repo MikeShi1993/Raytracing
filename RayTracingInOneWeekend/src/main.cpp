@@ -4,12 +4,14 @@
 #include <algorithm>
 #include <array>
 #include <chrono>
+#include <execution>
 #include <limits>
 
 #include <iostream>
 using std::cout;
 using std::endl;
 
+#include <functional>
 #include <memory>
 #include <numeric>
 using std::shared_ptr;
@@ -38,7 +40,7 @@ int main()
     constexpr int nx = 2000;
     constexpr int ny = 1000;
     constexpr int ns = 100;
-    constexpr bool seq = true;
+    constexpr bool seq = false;
 
     // constexpr int nx = 200;
     // constexpr int ny = 100;
@@ -64,7 +66,8 @@ int main()
 
     camera cam(90.0f, float(nx) / float(ny));
     unique_ptr<uint8_t[]> pixels(new uint8_t[nx * ny * channel_num]);
-    if (seq) {
+    if (seq)
+    {
         int index = 0;
         for (int j = ny - 1; j >= 0; --j)
         {
@@ -83,10 +86,6 @@ int main()
                 int ir = int(255.99 * col[0]);
                 int ig = int(255.99 * col[1]);
                 int ib = int(255.99 * col[2]);
-                // int pos = ((ny - j - 1) * nx + i) * 3;
-                // pixels[pos] = ir;
-                // pixels[pos + 1] = ig;
-                // pixels[pos + 2] = ib;
                 pixels[index++] = ir;
                 pixels[index++] = ig;
                 pixels[index++] = ib;
@@ -95,10 +94,24 @@ int main()
     }
     else
     {
-        vector<int> index(nx * ny);
-    	std::iota(index.begin(), index.end(), 0);
+        using std::placeholders::_1;
+        vector<int> ind(nx * ny);
+        vector<vec3> ret(nx * ny);
+        std::iota(ind.begin(), ind.end(), 0);
+        auto loop_func_bind = std::bind(loop_func, _1, nx, ny, ns, cam, &world);
+        std::transform(std::execution::par_unseq, ind.begin(), ind.end(), ret.begin(), loop_func_bind);
+        int index = 0;
+        for (auto &col : ret)
+        {
+            int ir = int(255.99 * col[0]);
+            int ig = int(255.99 * col[1]);
+            int ib = int(255.99 * col[2]);
+            pixels[index++] = ir;
+            pixels[index++] = ig;
+            pixels[index++] = ib;
+        }
     }
-    //stbi_write_jpg("ray_tracing.jpg", nx, ny, channel_num, pixels.get(), quality);
+    stbi_write_jpg("ray_tracing.jpg", nx, ny, channel_num, pixels.get(), quality);
     auto end = std::chrono::system_clock::now();
     std::chrono::duration<double> diff = end - start;
     cout << "time usage: " << diff.count() << "s" << endl;
