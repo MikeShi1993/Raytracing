@@ -32,6 +32,7 @@ using std::vector;
 #include "dielectric.h"
 #include "color.h"
 #include "loop_func.h"
+#include "random_scene.h"
 
 int main()
 {
@@ -46,25 +47,18 @@ int main()
     // constexpr int ny = 100;
     // constexpr int ns = 50;
 
+    vector<std::unique_ptr<int>> test;
+    test.push_back(std::make_unique<int>(10));
+    vector<std::unique_ptr<int>> test2(std::move(test));
+
     auto start = std::chrono::system_clock::now();
-
-    vec3 lower_left_corner(-2.0f, -1.0f, -1.0f);
-    vec3 horizontal(4.0f, 0.0f, 0.0f);
-    vec3 vertical(0.0f, 2.0f, 0.0f);
-    vec3 origin(0.0f, 0.0f, 0.0f);
-
-    hittable_list world;
-    float R = cos(PI / 4);
-    world.push_back(sphere(vec3(-R, 0.0f, -1.0f), R, std::make_shared<lambertian>(vec3(0.0f, 0.0f, 1.0f))));
-    world.push_back(sphere(vec3(R, 0.0f, -1.0f), R, std::make_shared<lambertian>(vec3(1.0f, 0.0f, 0.0f))));
-
-    // world.push_back(sphere(vec3(0.0f, 0.0f, -1.0f), 0.5f, std::make_shared<lambertian>(vec3(0.1f, 0.2f, 0.5f))));
-    // world.push_back(sphere(vec3(0.0f, -100.5f, -1.0f), 100.0f, std::make_shared<lambertian>(vec3(0.8f, 0.8f, 0.0f))));
-    // world.push_back(sphere(vec3(1.0f, 0.0f, -1.0f), 0.5f, std::make_shared<metal>(vec3(0.8f, 0.6f, 0.2f), 0.3f)));
-    // world.push_back(sphere(vec3(-1.0f, 0.0f, -1.0f), 0.5f, std::make_shared<dielectric>(1.5f)));
-    // world.push_back(sphere(vec3(-1.0f, 0.0f, -1.0f), -0.45f, std::make_shared<dielectric>(1.5f)));
-
-    camera cam(90.0f, float(nx) / float(ny));
+    hittable_list world(random_scene());
+    // float R = cos(PI / 4);
+    vec3 lookfrom(3.0f, 3.0f, 2.0f);
+    vec3 lookat(0.0f, 0.0f, -1.0f);
+    float dist_to_focus = (lookfrom - lookat).length();
+    float aperture = 2.0f;
+    camera cam(lookfrom, lookat, vec3(0.0f, 1.0f, 0.0f), 20, float(nx) / float(ny), aperture, dist_to_focus);
     unique_ptr<uint8_t[]> pixels(new uint8_t[nx * ny * channel_num]);
     if (seq)
     {

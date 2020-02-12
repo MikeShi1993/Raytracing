@@ -8,11 +8,12 @@ class hittable_list : public hittable
 public:
     hittable_list() = default;
     hittable_list(const hittable_list &) = delete;
+    hittable_list(hittable_list &&hl) noexcept : list(std::move(hl.list)) {}
     hittable_list(std::vector<std::unique_ptr<hittable>> &&l) noexcept : list(std::move(l)) {}
     template <typename T>
     void push_back(T &&lhs);
     virtual bool hit(const ray &ry, float t_min, float t_max, hit_record &rec) const override;
-
+    size_t size() const { return list.size(); }
 private:
     std::vector<std::unique_ptr<hittable>> list;
 };

@@ -15,7 +15,7 @@ protected:
     std::shared_ptr<material> mat_ptr;
 };
 
-bool sphere::hit(const ray &ry, float t_min, float t_max, hit_record &rec) const
+inline bool sphere::hit(const ray &ry, float t_min, float t_max, hit_record &rec) const
 {
     vec3 oc = ry.origin() - center;
     float a = dot(ry.direction(), ry.direction());
