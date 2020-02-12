@@ -41,7 +41,7 @@ int main()
     constexpr int nx = 2000;
     constexpr int ny = 1000;
     constexpr int ns = 100;
-    constexpr bool seq = false;
+    constexpr bool seq = true;
 
     // constexpr int nx = 200;
     // constexpr int ny = 100;
@@ -54,10 +54,10 @@ int main()
     auto start = std::chrono::system_clock::now();
     hittable_list world(random_scene());
     // float R = cos(PI / 4);
-    vec3 lookfrom(3.0f, 3.0f, 2.0f);
-    vec3 lookat(0.0f, 0.0f, -1.0f);
-    float dist_to_focus = (lookfrom - lookat).length();
-    float aperture = 2.0f;
+    vec3 lookfrom(13.0f, 2.0f, 3.0f);
+    vec3 lookat(0.0f, 0.0f, 0.0f);
+    float dist_to_focus = 10.0f;
+    float aperture = 0.1f;
     camera cam(lookfrom, lookat, vec3(0.0f, 1.0f, 0.0f), 20, float(nx) / float(ny), aperture, dist_to_focus);
     unique_ptr<uint8_t[]> pixels(new uint8_t[nx * ny * channel_num]);
     if (seq)
@@ -84,6 +84,8 @@ int main()
                 pixels[index++] = ig;
                 pixels[index++] = ib;
             }
+            if (j % 10 == 0)
+                cout << double((ny - j) / ny) << "\r";
         }
     }
     else
